@@ -1,27 +1,22 @@
 import React from "react";
 import { API_ENDPOINT } from "../constValues";
-import { Button } from "react-bootstrap";
+import { Button, Modal, Alert } from "react-bootstrap";
 
 export default class Department extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { departments: [] };
+    this.state = {
+      departments: [],
+      show: false,
+      modalTitle: "",
+      departmentName: "",
+      departmentId: 1,
+    };
   }
 
   componentDidMount() {
     this.interval = setInterval(() => {
-      fetch(`${API_ENDPOINT}/department`)
-        .then((response) => response.json())
-        .then((responseJson) => {
-          if (responseJson.length === 0) {
-            console.log("NO DATA FOUND!");
-          } else {
-            this.setState({
-              departments: responseJson,
-            });
-          }
-        })
-        .catch((err) => console.log(err.message));
+      this.getDepartments();
     }, 500);
   }
 
@@ -29,16 +24,126 @@ export default class Department extends React.Component {
     clearInterval(this.interval);
   }
 
+  getDepartments = () => {
+    fetch(`${API_ENDPOINT}/department`, {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        if (responseJson.length === 0) {
+          console.log("NO DATA FOUND!");
+        } else {
+          this.setState({
+            departments: responseJson,
+          });
+        }
+      })
+      .catch((err) => console.log(err.message));
+  };
+
+  createDepartment = () => {
+    fetch(`${API_ENDPOINT}/department`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        Name: this.state.departmentName,
+      }),
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.handleClose();
+      })
+      .catch((err) => Alert(err.message));
+  };
+
+  updateDepartment = () => {
+    fetch(`${API_ENDPOINT}/department`, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        Id: this.state.departmentId,
+        Name: this.state.departmentName,
+      }),
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.handleClose();
+      })
+      .catch((err) => Alert(err.message));
+  };
+
+  deleteDepartment = (Id) => {
+    fetch(`${API_ENDPOINT}/department/${Id}`, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.handleClose();
+      })
+      .catch((err) => Alert(err.message));
+  };
+
+  addClick = () => {
+    this.setState({
+      show: true,
+      modalTitle: "Add department",
+      departmentId: 0,
+      departmentName: "",
+    });
+  };
+
+  handleClose = () => {
+    this.setState({
+      show: false,
+    });
+  };
+
+  changeDepartmentName = (name) => {
+    this.setState({ departmentName: name.target.value });
+  };
+
+  updateDepartment = (dep) => {
+    this.setState({
+      show: true,
+      modalTitle:
+        dep.Name.length > 0 ? `Edit ${dep.Name} department` : "Edit department",
+      departmentId: dep.Id,
+      departmentName: dep.Name,
+    });
+  };
+
   render() {
     return (
       <div className="App">
+        <Button
+          type="button"
+          className="btn btn-primary m-2 float-end"
+          data-bs-toggle="modal"
+          data-bs-target="#departmentModal"
+          onClick={() => this.addClick()}
+        >
+          Add department
+        </Button>
         <h3 className="d-flex justify-content-center m-3">Department page</h3>
         <table className="table table-striped">
           <thead>
             <tr>
               <th>Id</th>
               <th>Name</th>
-              <th>Actions</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -47,7 +152,11 @@ export default class Department extends React.Component {
                 <td>{dep.Id}</td>
                 <td>{dep.Name}</td>
                 <td>
-                  <Button type="button" className="btn btn-lightmr-1">
+                  <Button
+                    type="button"
+                    className="btn btn-light mr-1"
+                    onClick={() => this.updateDepartment(dep)}
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
@@ -63,7 +172,11 @@ export default class Department extends React.Component {
                       />
                     </svg>
                   </Button>
-                  <Button type="button" className="btn btn-lightmr-1">
+                  <Button
+                    type="button"
+                    className="btn btn-light mr-1"
+                    onClick={() => this.deleteDepartment(dep.Id)}
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
@@ -84,6 +197,39 @@ export default class Department extends React.Component {
             ))}
           </tbody>
         </table>
+
+        {/*Modal*/}
+        <Modal
+          show={this.state.show}
+          onHide={this.handleClose}
+          size="lg"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title-vcenter">
+              {this.state.modalTitle}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="input-group mb-3">
+              <span className="input-group-text">Name</span>
+              <input
+                type="text"
+                className="form-control"
+                value={this.state.departmentName}
+                onChange={this.changeDepartmentName}
+              />
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            {this.state.departmentId === 0 ? (
+              <Button onClick={this.createDepartment}>Add</Button>
+            ) : (
+              <Button onClick={this.updateDepartment}>Edit</Button>
+            )}
+          </Modal.Footer>
+        </Modal>
       </div>
     );
   }

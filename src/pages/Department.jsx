@@ -1,11 +1,17 @@
 import React from "react";
 import { API_ENDPOINT } from "../constValues";
-import { Button } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 
 export default class Department extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { departments: [] };
+    this.state = {
+      departments: [],
+      show: false,
+      modalTitle: "",
+      departmentName: "",
+      departmentId: 1,
+    };
   }
 
   componentDidMount() {
@@ -29,9 +35,45 @@ export default class Department extends React.Component {
     clearInterval(this.interval);
   }
 
+  addClick = () => {
+    this.setState({
+      show: true,
+      modalTitle: "Add department",
+      departmentId: 0,
+      departmentName: "",
+    });
+  };
+
+  handleClose = () => {
+    this.setState({
+      show: false,
+    });
+  };
+
+  changeDepartmentName = (name) => {
+    this.setState({ departmentName: name.target.value });
+  };
+
+  editClick = (dep) => {
+    this.setState({
+      modalTitle: "Edit department",
+      departmentId: dep.Id,
+      departmentName: dep.Name,
+    });
+  };
+
   render() {
     return (
       <div className="App">
+        <Button
+          type="button"
+          className="btn btn-primary m-2 float-end"
+          data-bs-toggle="modal"
+          data-bs-target="#departmentModal"
+          onClick={() => this.addClick()}
+        >
+          Add department
+        </Button>
         <h3 className="d-flex justify-content-center m-3">Department page</h3>
         <table className="table table-striped">
           <thead>
@@ -47,7 +89,7 @@ export default class Department extends React.Component {
                 <td>{dep.Id}</td>
                 <td>{dep.Name}</td>
                 <td>
-                  <Button type="button" className="btn btn-lightmr-1">
+                  <Button type="button" className="btn btn-lightmr-1" onClick={() => this.editClick(dep)}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
@@ -84,6 +126,40 @@ export default class Department extends React.Component {
             ))}
           </tbody>
         </table>
+
+        {/*Modal*/}
+        <Modal
+          show={this.state.show}
+          onHide={this.handleClose}
+          size="lg"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title-vcenter">
+              {this.state.modalTitle}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="input-group mb-3">
+              <span className="input-group-text">Name</span>
+              <input
+                type="text"
+                className="form-control"
+                value={this.state.departmentName}
+                onChange={this.changeDepartmentName}
+              />
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            {this.state.departmentId === 0 ? (
+              <Button onClick={this.handleClose}>Add</Button>
+            ) : null}
+            {this.state.departmentId !== 0 ? (
+              <Button onClick={this.handleClose}>Edit</Button>
+            ) : null}
+          </Modal.Footer>
+        </Modal>
       </div>
     );
   }

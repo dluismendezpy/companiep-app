@@ -14,10 +14,6 @@ export default class Department extends React.Component {
     };
   }
 
-  getEndpoint = () => {
-    return `${API_ENDPOINT}/department`;
-  };
-
   componentDidMount() {
     this.interval = setInterval(() => {
       this.getDepartments();
@@ -29,7 +25,7 @@ export default class Department extends React.Component {
   }
 
   getDepartments = () => {
-    fetch(this.getEndpoint(), {
+    fetch(`${API_ENDPOINT}/department`, {
       method: "GET",
       headers: {
         "Content-type": "application/json",
@@ -49,7 +45,7 @@ export default class Department extends React.Component {
   };
 
   createDepartment = () => {
-    fetch(this.getEndpoint(), {
+    fetch(`${API_ENDPOINT}/department`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -65,9 +61,9 @@ export default class Department extends React.Component {
       })
       .catch((err) => Alert(err.message));
   };
-  
+
   updateDepartment = () => {
-    fetch(this.getEndpoint(), {
+    fetch(`${API_ENDPOINT}/department`, {
       method: "PUT",
       headers: {
         Accept: "application/json",
@@ -77,6 +73,21 @@ export default class Department extends React.Component {
         Id: this.state.departmentId,
         Name: this.state.departmentName,
       }),
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.handleClose();
+      })
+      .catch((err) => Alert(err.message));
+  };
+
+  deleteDepartment = (Id) => {
+    fetch(`${API_ENDPOINT}/department/${Id}`, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
     })
       .then((response) => response.json())
       .then((responseJson) => {
@@ -104,7 +115,7 @@ export default class Department extends React.Component {
     this.setState({ departmentName: name.target.value });
   };
 
-  editClick = (dep) => {
+  updateDepartment = (dep) => {
     this.setState({
       show: true,
       modalTitle:
@@ -132,7 +143,7 @@ export default class Department extends React.Component {
             <tr>
               <th>Id</th>
               <th>Name</th>
-              <th>Actions</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -143,8 +154,8 @@ export default class Department extends React.Component {
                 <td>
                   <Button
                     type="button"
-                    className="btn btn-lightmr-1"
-                    onClick={() => this.editClick(dep)}
+                    className="btn btn-light mr-1"
+                    onClick={() => this.updateDepartment(dep)}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -161,7 +172,11 @@ export default class Department extends React.Component {
                       />
                     </svg>
                   </Button>
-                  <Button type="button" className="btn btn-lightmr-1">
+                  <Button
+                    type="button"
+                    className="btn btn-light mr-1"
+                    onClick={() => this.deleteDepartment(dep.Id)}
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"

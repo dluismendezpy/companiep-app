@@ -1,6 +1,6 @@
 import React from "react";
 import { API_ENDPOINT } from "../constValues";
-import { Button, Modal } from "react-bootstrap";
+import { Button, Modal, Alert } from "react-bootstrap";
 
 export default class Department extends React.Component {
   constructor(props) {
@@ -14,26 +14,57 @@ export default class Department extends React.Component {
     };
   }
 
+  getEndpoint = () => {
+    return `${API_ENDPOINT}/department`;
+  };
+
   componentDidMount() {
     this.interval = setInterval(() => {
-      fetch(`${API_ENDPOINT}/department`)
-        .then((response) => response.json())
-        .then((responseJson) => {
-          if (responseJson.length === 0) {
-            console.log("NO DATA FOUND!");
-          } else {
-            this.setState({
-              departments: responseJson,
-            });
-          }
-        })
-        .catch((err) => console.log(err.message));
+      this.getDepartments();
     }, 500);
   }
 
   componentWillUnmount() {
     clearInterval(this.interval);
   }
+
+  getDepartments = () => {
+    fetch(this.getEndpoint(), {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        if (responseJson.length === 0) {
+          console.log("NO DATA FOUND!");
+        } else {
+          this.setState({
+            departments: responseJson,
+          });
+        }
+      })
+      .catch((err) => console.log(err.message));
+  };
+
+  createDepartment = () => {
+    fetch(this.getEndpoint(), {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        Name: this.state.departmentName,
+      }),
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.handleClose();
+      })
+      .catch((err) => Alert(err.message));
+  };
 
   addClick = () => {
     this.setState({
@@ -51,12 +82,17 @@ export default class Department extends React.Component {
   };
 
   changeDepartmentName = (name) => {
+    {
+      console.log("HOLA: " + name.target.value);
+    }
     this.setState({ departmentName: name.target.value });
   };
 
   editClick = (dep) => {
     this.setState({
-      modalTitle: "Edit department",
+      show: true,
+      modalTitle:
+        dep.Name.length > 0 ? `Edit ${dep.Name} department` : "Edit department",
       departmentId: dep.Id,
       departmentName: dep.Name,
     });
@@ -89,7 +125,11 @@ export default class Department extends React.Component {
                 <td>{dep.Id}</td>
                 <td>{dep.Name}</td>
                 <td>
-                  <Button type="button" className="btn btn-lightmr-1" onClick={() => this.editClick(dep)}>
+                  <Button
+                    type="button"
+                    className="btn btn-lightmr-1"
+                    onClick={() => this.editClick(dep)}
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
@@ -153,11 +193,10 @@ export default class Department extends React.Component {
           </Modal.Body>
           <Modal.Footer>
             {this.state.departmentId === 0 ? (
-              <Button onClick={this.handleClose}>Add</Button>
-            ) : null}
-            {this.state.departmentId !== 0 ? (
+              <Button onClick={this.createDepartment}>Add</Button>
+            ) : (
               <Button onClick={this.handleClose}>Edit</Button>
-            ) : null}
+            )}
           </Modal.Footer>
         </Modal>
       </div>

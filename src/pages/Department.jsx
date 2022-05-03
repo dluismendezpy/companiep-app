@@ -10,9 +10,40 @@ export default class Department extends React.Component {
       show: false,
       modalTitle: "",
       departmentName: "",
-      departmentId: 1,
+      departmentId: 0,
+      departmentIdFilter: "",
+      departmentNameFilter: "",
+      departmentsWithoutFilter: [],
     };
   }
+
+  filterFn = () => {
+    let departmentIdFilter = this.state.departmentIdFilter;
+    let departmentNameFilter = this.state.departmentNameFilter;
+    let filteredData = this.state.departmentsWithoutFilter.filter((e) => {
+      return (
+        e.departmentId
+          .toString()
+          .toLowerCase()
+          .includes(departmentIdFilter.toString().trim().toLowerCase()) &&
+        e.departmentName
+          .toString()
+          .toLowerCase()
+          .includes(departmentNameFilter.toString().trim().toLowerCase())
+      );
+    });
+    this.setState({ departments: filteredData });
+  };
+
+  changeDepartmentIdFilter = (e) => {
+    this.state.departmentIdFilter = e.target.value;
+    this.filterFn();
+  };
+
+  changeDepartmentNameFilter = (e) => {
+    this.state.departmentNameFilter = e.target.value;
+    this.filterFn();
+  };
 
   componentDidMount() {
     this.interval = setInterval(() => {
@@ -115,7 +146,7 @@ export default class Department extends React.Component {
     this.setState({ departmentName: name.target.value });
   };
 
-  updateDepartment = (dep) => {
+  updateDepartmentWindow = (dep) => {
     this.setState({
       show: true,
       modalTitle:
@@ -142,8 +173,22 @@ export default class Department extends React.Component {
         <Table striped bordered hover size="sm">
           <thead>
             <tr>
-              <th>Id</th>
-              <th>Name</th>
+              <th>
+                <input
+                  className="form-control m-2"
+                  placeholder="Filter"
+                  onChange={this.changeDepartmentIdFilter}
+                />
+                Id
+              </th>
+              <th>
+                <input
+                  className="form-control m-2"
+                  placeholder="Filter"
+                  onChange={this.changeDepartmentNameFilter}
+                />
+                Name
+              </th>
               <th></th>
             </tr>
           </thead>
@@ -156,7 +201,7 @@ export default class Department extends React.Component {
                   <Button
                     type="button"
                     className="btn btn-light mr-1"
-                    onClick={() => this.updateDepartment(dep)}
+                    onClick={() => this.updateDepartmentWindow(dep)}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

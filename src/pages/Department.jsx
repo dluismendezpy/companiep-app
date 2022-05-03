@@ -65,6 +65,25 @@ export default class Department extends React.Component {
       })
       .catch((err) => Alert(err.message));
   };
+  
+  updateDepartment = () => {
+    fetch(this.getEndpoint(), {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        Id: this.state.departmentId,
+        Name: this.state.departmentName,
+      }),
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.handleClose();
+      })
+      .catch((err) => Alert(err.message));
+  };
 
   addClick = () => {
     this.setState({
@@ -82,9 +101,6 @@ export default class Department extends React.Component {
   };
 
   changeDepartmentName = (name) => {
-    {
-      console.log("HOLA: " + name.target.value);
-    }
     this.setState({ departmentName: name.target.value });
   };
 
@@ -195,7 +211,7 @@ export default class Department extends React.Component {
             {this.state.departmentId === 0 ? (
               <Button onClick={this.createDepartment}>Add</Button>
             ) : (
-              <Button onClick={this.handleClose}>Edit</Button>
+              <Button onClick={this.updateDepartment}>Edit</Button>
             )}
           </Modal.Footer>
         </Modal>

@@ -31,7 +31,7 @@ export default class Navigation extends React.Component {
             alt="Brand"
             src={brand}
           />
-          <Navbar.Brand href="/">Mendez Services</Navbar.Brand>
+          <Navbar.Brand href="/">CompaniepNet</Navbar.Brand>
           <Nav className="me-auto">
             {navItems.map((item) => (
               <NavLink

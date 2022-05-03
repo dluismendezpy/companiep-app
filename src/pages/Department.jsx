@@ -1,6 +1,6 @@
 import React from "react";
 import { API_ENDPOINT } from "../constValues";
-import { Button, Modal, Alert } from "react-bootstrap";
+import { Button, Modal, Alert, Table } from "react-bootstrap";
 
 export default class Department extends React.Component {
   constructor(props) {
@@ -127,10 +127,11 @@ export default class Department extends React.Component {
 
   render() {
     return (
-      <div className="App">
+      <div style={{ marginLeft: "7%", marginRight: "7%" }} className="App">
         <Button
           type="button"
-          className="btn btn-primary m-2 float-end"
+          variant="link"
+          className="m-2 float-end"
           data-bs-toggle="modal"
           data-bs-target="#departmentModal"
           onClick={() => this.addClick()}
@@ -138,7 +139,7 @@ export default class Department extends React.Component {
           Add department
         </Button>
         <h3 className="d-flex justify-content-center m-3">Department page</h3>
-        <table className="table table-striped">
+        <Table striped bordered hover size="sm">
           <thead>
             <tr>
               <th>Id</th>
@@ -196,7 +197,7 @@ export default class Department extends React.Component {
               </tr>
             ))}
           </tbody>
-        </table>
+        </Table>
 
         {/*Modal*/}
         <Modal

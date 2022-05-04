@@ -158,7 +158,7 @@ export default class Department extends React.Component {
 
   render() {
     return (
-      <div style={{ marginLeft: "7%", marginRight: "7%" }} className="App">
+      <div style={{ marginLeft: "7%", marginRight: "7%" }}>
         <Button
           type="button"
           variant="link"

@@ -4,19 +4,23 @@ Frontend side of CompaniepNet [API](https://github.com/dluismendezpy/CompaniepNe
 
 ## Prerequisites
 
-- Node Js
+- NodeJs
 - npm or yarn
 
-### Setup
+## Setup
 
 #### Clone repo
+
 `git clone https://github.com/dluismendezpy/companiep-app.git`
 
-#### Intall dependencies
+#### Install dependencies
+
 `yarn install`
 
 #### Run project
+
 `yarn start`
 
 ## API Info
-This projects is using [CompaniepNet API.](https://github.com/dluismendezpy/CompaniepNet) - MIT
+
+This project is using [CompaniepNet API.](https://github.com/dluismendezpy/CompaniepNet) - MIT

@@ -36,12 +36,16 @@ export default class Department extends React.Component {
   };
 
   changeDepartmentIdFilter = (e) => {
-    this.state.departmentIdFilter = e.target.value;
+    this.setState({
+      departmentIdFilter: e.target.value,
+    });
     this.filterFn();
   };
 
   changeDepartmentNameFilter = (e) => {
-    this.state.departmentNameFilter = e.target.value;
+    this.setState({
+      departmentNameFilter: e.target.value,
+    });
     this.filterFn();
   };
 
@@ -87,7 +91,7 @@ export default class Department extends React.Component {
       }),
     })
       .then((response) => response.json())
-      .then((responseJson) => {
+      .then(() => {
         this.handleClose();
       })
       .catch((err) => Alert(err.message));
@@ -106,7 +110,7 @@ export default class Department extends React.Component {
       }),
     })
       .then((response) => response.json())
-      .then((responseJson) => {
+      .then(() => {
         this.handleClose();
       })
       .catch((err) => Alert(err.message));
@@ -121,7 +125,7 @@ export default class Department extends React.Component {
       },
     })
       .then((response) => response.json())
-      .then((responseJson) => {
+      .then(() => {
         this.handleClose();
       })
       .catch((err) => Alert(err.message));

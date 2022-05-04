@@ -1,8 +1,6 @@
 import React from "react";
-import { Navbar, Container, Nav } from "react-bootstrap";
+import { Navbar, Container, Nav, NavbarBrand } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
-import "./Navigation.css";
-import brand from "../../assets/brand.png";
 
 const navItems = [
   {
@@ -22,27 +20,28 @@ const navItems = [
 export default class Navigation extends React.Component {
   render() {
     return (
-      <Navbar bg="dark" variant="dark">
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Container className="text-white">
-          <img
-            className="d-inline-block align-top brand-image"
-            height="50px"
-            alt="Brand"
-            src={brand}
-          />
-          <Navbar.Brand href="/">CompaniepNet</Navbar.Brand>
-          <Nav className="me-auto">
-            {navItems.map((item) => (
-              <NavLink
-                to={item.Route}
-                key={item.Name}
-                className="d-inline p-2 bg-dark text-white"
-              >
-                {item.Name}
-              </NavLink>
-            ))}
-          </Nav>
+      <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+        <Container>
+          <Navbar.Brand to="/">CompraniepNet</Navbar.Brand>
+          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Collapse id="responsive-navbar-nav">
+            <Nav className="me-auto">
+              {navItems.map((item) => (
+                <NavLink
+                  to={item.Route}
+                  key={item.Name}
+                  className="d-inline p-2 bg-dark text-white"
+                >
+                  {item.Name}
+                </NavLink>
+              ))}
+            </Nav>
+            <Nav>
+              <Nav.Link eventKey={2} href="https://www.luismendezdev.com/" target="_blank">
+                About developer
+              </Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
         </Container>
       </Navbar>
     );

@@ -9,7 +9,6 @@ const App = () => {
   return (
     <BrowserRouter>
       <div className="App">
-        <h3 className="d-flex justify-content-center m-3">CompaniepNet</h3>
         <Navigation />
         <Routes>
           <Route path="/" element={<Home />} />
